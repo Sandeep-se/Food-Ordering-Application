@@ -2,28 +2,25 @@ package com.project.controller;
 
 import java.sql.ResultSet;
 
-import com.project.service.AuthenticationService;
+import com.project.repository.AutheticationRepository;
 
 public class AuthenticationController {
-	public AuthenticationService authenticationService;
+	public AutheticationRepository autheticationRepository;
 	
-	public AuthenticationController(AuthenticationService authenticationService) {
-		this.authenticationService=authenticationService;
+	public AuthenticationController(AutheticationRepository autheticationRepository) {
+		this.autheticationRepository=autheticationRepository;
 	}
 	
 	public boolean checkUserPhoneNumberExists(Object[] values) {
-		return authenticationService.checkUserPhoneNumberExists(values);
+		return autheticationRepository.checkUserPhoneNumberExists(values);
 	}
 
 	public boolean checkUserEmailExists(Object[] values) {
-		return authenticationService.checkUserEmailExists(values);
+		return autheticationRepository.checkUserEmailExists(values);
 	}
 
-	public boolean checkUserIdExists(Object[] values) {
-        return authenticationService.checkUserIdExists(values);
-    }
 	
 	public ResultSet login(Object values[]) {
-		return authenticationService.login(values);
+		return autheticationRepository.login(values);
 	}
 }

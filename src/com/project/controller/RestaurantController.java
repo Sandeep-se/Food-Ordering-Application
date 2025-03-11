@@ -2,37 +2,41 @@ package com.project.controller;
 
 import java.sql.ResultSet;
 
-import com.project.service.RestaurantService;
+import com.project.repository.RestaurantRepository;
 
 public class RestaurantController {
-	private RestaurantService restaurantService;
+	private RestaurantRepository restaurantRepository;
 	
-	public RestaurantController(RestaurantService restaurantService) {
-		this.restaurantService= restaurantService;
+	public RestaurantController(RestaurantRepository restaurantRepository) {
+		this.restaurantRepository= restaurantRepository;
 	}
 	
 	public boolean createRestaurant(Object values[]) {
-		boolean response=restaurantService.createRestaurant(values);
+		boolean response=restaurantRepository.createRestaurant(values);
 		return response;
 	}
 	
 	
 	public ResultSet getAllRestaurants() {
-		return restaurantService.getAllRestaurants();
+		return restaurantRepository.getAllRestaurants();
 	}
 	
 	public ResultSet getRestaurnatById(Object values[]) {
-		return restaurantService.getRestaurantById(values);
+		return restaurantRepository.getRestaurantById(values);
 	}
 	
 	public ResultSet searchRestaurantByName(Object []values) {
-		return restaurantService.searchRestaurantByName(values);
+		return restaurantRepository.searchRestaurantByName(values);
+	}
+	
+	public ResultSet login(Object values[]) {
+		return restaurantRepository.login(values);
 	}
 	public boolean deleteRestaurantsById(Object values[]) {
-		return restaurantService.deleteRestaurantsById(values);
+		return restaurantRepository.deleteRestaurantsById(values);
 	}
 	
 	public ResultSet getRestaurantsMenu(Object values[]) {
-		return restaurantService.getRestaurantsMenu(values);
+		return restaurantRepository.getRestaurantsMenu(values);
 	}
 }

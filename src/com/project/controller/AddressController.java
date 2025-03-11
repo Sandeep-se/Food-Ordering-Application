@@ -2,22 +2,22 @@ package com.project.controller;
 
 import java.sql.ResultSet;
 
-import com.project.service.AddressService;
+import com.project.repository.AddressRepository;
 
 public class AddressController {
-	private AddressService addressService;
-	public AddressController(AddressService addressService) {
-		this.addressService=addressService;
+	private AddressRepository addressRepository;
+	public AddressController(AddressRepository addressRepository) {
+		this.addressRepository=addressRepository;
 	}
 	
-	public 	 boolean addAddress(Object values[]) {
-	     return addressService.addAddress(values);
+	public boolean addAddress(Object values[]) {
+	     return addressRepository.addAddress(values);
 	}
 	public ResultSet getUserAddressesByUserId(Object values[]) {
-       return addressService.getUserAddressesByUserId(values);
+       return addressRepository.getUserAddressesByUserId(values);
    }
 	public ResultSet getAddressByAddressId(Object values[]) {
-       return addressService.getAddressByAddressId(values);
-   }
+	   return addressRepository.getAddressByAddressId(values);
+	}
 }
 

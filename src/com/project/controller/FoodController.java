@@ -21,7 +21,7 @@ public class FoodController {
 	public boolean deleteFoodItem(Object values[]) {
 		return foodService.deleteFood(values);
 	}
-	public ResultSet getAllFoodItem() {
+	public ResultSet getAllFoodItems() {
 		return foodService.getAllFoodItem();
 	}
 }

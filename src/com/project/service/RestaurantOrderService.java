@@ -3,22 +3,25 @@ package com.project.service;
 import java.sql.ResultSet;
 
 import com.project.database.DatabaseOperation;
+import com.project.database.Queries;
+import com.project.repository.RestaurantOrderRepository;
 
-public class RestaurantOrderService {
+public class RestaurantOrderService implements RestaurantOrderRepository{
 
 	private DatabaseOperation databaseOperation;
 	
 	public RestaurantOrderService(DatabaseOperation databaseOperation) {
 		this.databaseOperation=databaseOperation;
 	}
+	@Override
 	public ResultSet getRestaurantOrders(Object[] values) {
 		
-		ResultSet resultSet=databaseOperation.executeQuery(null, values);
+		ResultSet resultSet=databaseOperation.executeQuery(Queries.GET_RESTAURANT_ORDERS.getQuery(), values);
 		return resultSet;
 	}
-
+	@Override
 	public boolean updateOrderStatus(Object[] values) {
-		boolean response=databaseOperation.executeUpdate(null, values);
+		boolean response=databaseOperation.executeUpdate(Queries.UPDATE_ORDERS.getQuery(), values);
 		return response;
 	}
 

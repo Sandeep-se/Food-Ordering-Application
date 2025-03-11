@@ -30,10 +30,6 @@ public class UserView {
 	public void userView(Scanner sc){
 		System.out.println("welcome to user page");
 		
-//		System.out.println("1.Register");
-//		System.out.println("2.Login");
-//		System.out.println("0.Exit the page");
-		
 		boolean flag=true;
 		
 		DatabaseOperation databaseOperation=new DatabaseOperation();
@@ -70,6 +66,23 @@ public class UserView {
 			switch(choose) {
 				case 1->{
 					
+					 System.out.println("Enter your name: ");
+					    String name = sc.nextLine();
+					    
+					    System.out.println("Enter your email: ");
+					    String email = sc.nextLine();
+					    
+					    System.out.println("Enter your password: ");
+					    String password = sc.nextLine();
+					    
+					    System.out.println("Enter your phone number: ");
+					    String phoneNumber = sc.nextLine();
+					    
+					    if (name.isEmpty() || email.isEmpty() || password.isEmpty() || phoneNumber.isEmpty()) {
+					        System.out.println("All fields are required!");
+					        break;
+					    }
+					    
 				}
 				case 2->{
 					try {
@@ -79,6 +92,7 @@ public class UserView {
 							System.out.println("Email should contain @gmail.com");
 							break;
 						}
+						
 						System.out.println("Enter password :");
 						String password=sc.next();
 						
@@ -122,114 +136,121 @@ public class UserView {
 											sc.nextLine();
 											switch(choose) {
 												case 111->{
-													ResultSet resultSet1=restaurantController.getAllRestaurants();
+													try(ResultSet resultSet1=restaurantController.getAllRestaurants()){
 													
-													List<Restaurant> restaurants=new ArrayList<>();
-													while(resultSet1!=null && resultSet1.next()) {
-														restaurants.add(new Restaurant(resultSet1.getInt("restaurant_id"),resultSet1.getString("restaurant_name"),resultSet1.getString("restaurant_location"),resultSet1.getString("email"),resultSet1.getString("password")));
-													}
 													
-													for(Restaurant restaurant:restaurants) {
-														System.out.println("\n===============================");
-										                System.out.println("Restaurant: " + restaurant.getRestaurantName());
-										                System.out.println("Location: " + restaurant.getRestaurantLocation());
-										                System.out.println("-------------------------------");
+														List<Restaurant> restaurants=new ArrayList<>();
+														while(resultSet1!=null && resultSet1.next()) {
+															restaurants.add(new Restaurant(resultSet1.getInt("restaurant_id"),resultSet1.getString("restaurant_name"),resultSet1.getString("restaurant_location"),resultSet1.getString("email"),resultSet1.getString("password")));
+														}
 														
-														ResultSet resultSet2=menuController.getRestaurantMenu(new Object[] {restaurant.getRestaurantId()});
+														for(Restaurant restaurant:restaurants) {
+															System.out.println("\n===============================");
+											                System.out.println("Restaurant: " + restaurant.getRestaurantName());
+											                System.out.println("Location: " + restaurant.getRestaurantLocation());
+											                System.out.println("-------------------------------");
+															
+															
+															
+															try(ResultSet resultSet2=menuController.getRestaurantMenu(new Object[] {restaurant.getRestaurantId()})) {
+														        boolean hasMenu = false;
+														        while (resultSet2 != null && resultSet2.next()) {
+														            hasMenu = true;
+														            int menuId = resultSet2.getInt("menu_id");
+														            String foodName = resultSet2.getString("food_name");
+														            double price = resultSet2.getDouble("price");
+														            System.out.println("-> Food Name : " + foodName + " (Menu ID: " + menuId + ") price: ₹" + price);
+														        }
+														        if (!hasMenu) {
+														            System.out.println("  No menu available for this restaurant.");
+														        }
+														    } catch (SQLException e) {
+														        e.printStackTrace();
+														    }
+															
+														}
 														
-														try {
-													        boolean hasMenu = false;
-													        while (resultSet2 != null && resultSet2.next()) {
-													            hasMenu = true;
-													            int menuId = resultSet2.getInt("menu_id");
-													            String foodName = resultSet2.getString("food_name");
-													            double price = resultSet2.getDouble("price");
-													            System.out.println("-> Food Name : " + foodName + " (Menu ID: " + menuId + ") price: ₹" + price);
-													        }
-													        if (!hasMenu) {
-													            System.out.println("  No menu available for this restaurant.");
-													        }
-													    } catch (SQLException e) {
+													}catch (SQLException e) {
 													        e.printStackTrace();
-													    }finally {
-													    	resultSet2.close();
 													    }
-													}
+													
 												}
 												case 222->{
 													try {
-											            System.out.println("Enter restaurant name (partial or full): ");
-											            String searchName = sc.nextLine();
+													    System.out.println("Enter restaurant name (partial or full): ");
+													    String searchName = sc.nextLine();
 
-											            ResultSet resultSet1 = restaurantController.searchRestaurantByName(new Object[]{"%" + searchName + "%"});
+													    try (ResultSet resultSet1 = restaurantController.searchRestaurantByName(new Object[]{"%" + searchName + "%"}) ) {
+													        boolean found = false;
 
-											            boolean found = false;
-											            while (resultSet1 != null && resultSet1.next()) {
-											                found = true;
-											                int restaurantId = resultSet1.getInt("restaurant_id");
-											                String restaurantName = resultSet1.getString("restaurant_name");
-											                String location = resultSet1.getString("restaurant_location");
+													        while (resultSet1.next()) {
+													            found = true;
+													            int restaurantId = resultSet1.getInt("restaurant_id");
+													            String restaurantName = resultSet1.getString("restaurant_name");
+													            String location = resultSet1.getString("restaurant_location");
 
-											                System.out.println("\n===============================");
-											                System.out.println("Restaurant: " + restaurantName);
-											                System.out.println("Location: " + location);
-											                System.out.println("-------------------------------");
+													            System.out.println("\n===============================");
+													            System.out.println("Restaurant: " + restaurantName);
+													            System.out.println("Location: " + location);
+													            System.out.println("-------------------------------");
 
-											                ResultSet menuResultSet = menuController.getRestaurantMenu(new Object[]{restaurantId});
-											                boolean hasMenu = false;
-											                
-											                try {
-											                    while (menuResultSet != null && menuResultSet.next()) {
-											                        hasMenu = true;
-											                        String foodName = menuResultSet.getString("food_name");
-											                        double price = menuResultSet.getDouble("price");
-											                        System.out.printf("-> %s Price: ₹%.2f%n", foodName, price);
-											                    }
-											                    if (!hasMenu) {
-											                        System.out.println("No menu available for this restaurant.");
-											                    }
-											                } finally {
-											                    if (menuResultSet != null) menuResultSet.close();
-											                }
-											            }
+													            boolean hasMenu = false;
 
-											            if (!found) {
-											                System.out.println("No restaurant found with the given name.");
-											            }
-											        } catch (SQLException e) {
-											            System.err.println("Database error: " + e.getMessage());
-											        }
+													            
+													            try (ResultSet menuResultSet = menuController.getRestaurantMenu(new Object[]{restaurantId})) {
+													                while (menuResultSet.next()) {
+													                    hasMenu = true;
+													                    String foodName = menuResultSet.getString("food_name");
+													                    double price = menuResultSet.getDouble("price");
+													                    System.out.printf("-> %s Price: ₹%.2f%n", foodName, price);
+													                }
+													            }
+
+													            if (!hasMenu) {
+													                System.out.println("No menu available for this restaurant.");
+													            }
+													        }
+
+													        if (!found) {
+													            System.out.println("No restaurant found with the given name.");
+													        }
+													    } 
+													} catch (SQLException e) {
+													    System.err.println("Database error: " + e.getMessage());
+													}
 											    }
 												case 333->{
 													try {
 												        System.out.println("Enter food name (partial or full): ");
 												        String searchFood = sc.nextLine();
 
-												        ResultSet resultSet1 = menuController.searcFoodInMenu(new Object[]{"%" + searchFood + "%"});
+												        try(ResultSet resultSet1 = menuController.searchFoodInMenu(new Object[]{"%" + searchFood + "%"})){
 
-												        boolean found = false;
-												        while (resultSet1 != null && resultSet1.next()) {
-												            found = true;
-												            int restaurantId = resultSet1.getInt("restaurant_id");
-												            String restaurantName = resultSet1.getString("restaurant_name");
-												            String location = resultSet1.getString("restaurant_location");
-												            String foodName = resultSet1.getString("food_name");
-												            double price = resultSet1.getDouble("price");
-
-												            System.out.println("\n===============================");
-												            System.out.println("Restaurant: " + restaurantName);
-												            System.out.println("Location: " + location);
-												            System.out.println("Food: " + foodName);
-												            System.out.println("Price: ₹" + price);
-												            System.out.println("-------------------------------");
-												        }
-
-												        if (!found) {
-												            System.out.println("No restaurant found offering this food item.");
+													        boolean found = false;
+													        while (resultSet1 != null && resultSet1.next()) {
+													            found = true;
+													            int restaurantId = resultSet1.getInt("restaurant_id");
+													            String restaurantName = resultSet1.getString("restaurant_name");
+													            String location = resultSet1.getString("restaurant_location");
+													            String foodName = resultSet1.getString("food_name");
+													            double price = resultSet1.getDouble("price");
+	
+													            System.out.println("\n===============================");
+													            System.out.println("Restaurant: " + restaurantName);
+													            System.out.println("Location: " + location);
+													            System.out.println("Food: " + foodName);
+													            System.out.println("Price: ₹" + price);
+													            System.out.println("-------------------------------");
+													        }
+	
+													        if (!found) {
+													            System.out.println("No restaurant found offering this food item.");
+													        }
 												        }
 												    } catch (SQLException e) {
 												        System.err.println("Database error: " + e.getMessage());
 												    }
+													
 												}
 												
 												case 444->{
@@ -280,16 +301,23 @@ public class UserView {
 												        }
 												        if (cartItems.isEmpty()) {
 												            System.out.println(" No items in cart.");
-												            return;
+												            break;
 												        }
 												        int addressId=Utility.addressIdHelper(user.getUserId(), sc, addressService);
-												        System.out.println(addressId);
+//												        System.out.println(addressId);
 												        boolean response=false;
-												        for(Cart cart:cartItems) {
-												        	response=userOrderController.makeOrder(cartItems,new Object[] {user.getUserId(),addressId});
+												        
+												        response=userOrderController.makeOrder(cartItems,new Object[] {user.getUserId(),addressId});
+												        if(response) {
+												        	boolean response1=cartController.clearCart(new Object[] {user.getUserId()});
+												        	if(response1) {
+												        		System.out.println("cart clear succesfull");
+												        	}
+												        	else {
+												        		System.out.println("failed in cart clearing");
+												        		break;
+												        	}
 												        }
-												        if(response)
-												        cartController.clearCart(new Object[] {user.getUserId()});
 												        if (response) {
 												            System.out.println("Order placed successfully!");
 												        } else {
@@ -346,16 +374,20 @@ public class UserView {
 																										
 													try (ResultSet resultSet1 = cartController.getItemInCart(new Object[]{user.getUserId()})){
 													    boolean hasItems = false;
-													    while (resultSet != null && resultSet.next()) {
+													    while (resultSet1 != null && resultSet1.next()) {
 													        hasItems = true;
-													        int quantity = resultSet.getInt("quantity");
-													        String restaurantName = resultSet.getString("restaurant_name");
-													        String restaurantLocation = resultSet.getString("restaurant_location");
-													        String foodName = resultSet.getString("food_name");
-													        String foodType = resultSet.getString("type");
-													        double price = resultSet.getDouble("price");
+													        int cartId=resultSet1.getInt("cart_id");
+													        int menuId=resultSet1.getInt("menu_id");
+													        int quantity = resultSet1.getInt("quantity");
+													        String restaurantName = resultSet1.getString("restaurant_name");
+													        String restaurantLocation = resultSet1.getString("restaurant_location");
+													        String foodName = resultSet1.getString("food_name");
+													        String foodType = resultSet1.getString("type");
+													        double price = resultSet1.getDouble("price");
 
 													        System.out.println("--------------------------------------------------");
+													        System.out.println("Cart Id          : " + cartId );
+													        System.out.println("Menu Id          : " + menuId );
 													        System.out.println("Restaurant Name  : " + restaurantName);
 													        System.out.println("Location         : " + restaurantLocation);
 													        System.out.println("Food Name        : " + foodName);
@@ -379,10 +411,112 @@ public class UserView {
 											}
 										}
 									}
+									case 13->{
+										boolean flag2=true;
+										
+										while(flag2) {
+											System.out.println("Orders page");
+											System.out.println("1 list the orders ");
+											System.out.println("2 reorder");
+											System.out.println("0 exit");
+											
+											System.out.println("choose the above option");
+											choose=sc.nextInt();
+											sc.nextLine();
+											switch(choose) {
+												case 1 -> {
+														try(ResultSet resultSet1 = userOrderController.getOrderHistory(new Object[]{user.getUserId()})){
+															    
+													    System.out.println("Order History:");
+													    System.out.println("--------------------------------------------------------------------------------");
+													    System.out.printf("%-10s %-20s %-20s %-15s %-20s %-10s\n", 
+													                      "Order ID", "Restaurant", "Food", "Date", "Address", "Status");
+													    System.out.println("--------------------------------------------------------------------------------");
+													    boolean hashItem=true;
+													    try {
+													        while (resultSet1.next()) {
+													        	hashItem=false;
+													            int orderId = resultSet1.getInt("order_id");
+													            String restaurantName = resultSet1.getString("restaurant_name");
+													            String foodName = resultSet1.getString("food_name");
+													            String orderDate = resultSet1.getString("order_date");
+													            String address = resultSet1.getString("address");
+													            String status = resultSet1.getString("status");
+		
+													            System.out.printf("%-10d %-20s %-20s %-15s %-20s %-10s\n", 
+													                              orderId, restaurantName, foodName, orderDate, address, status);
+													        }
+													        
+													        if(hashItem) {
+													        	System.out.println("no previous order found");
+													        }
+													    } catch (SQLException e) {
+													        e.printStackTrace();
+													    }
+													    System.out.println("----------------------------------------------------------------------------------");
+													}
+												}
+												case 2->{
+													
+													System.out.println("Enter the Orde id: ");
+													
+													try(ResultSet resultSet1 = userOrderController.getOrderHistory(new Object[]{user.getUserId()})){
+													    
+													    System.out.println("Order History:");
+													    System.out.println("--------------------------------------------------------------------------------");
+													    System.out.printf("%-10s %-20s %-20s %-15s %-20s %-10s\n", 
+													                      "Order ID", "Restaurant", "Food", "Date", "Address", "Status");
+													    System.out.println("--------------------------------------------------------------------------------");
+													    boolean hashItem=true;
+													    
+												        while (resultSet1.next()) {
+												        	hashItem=false;
+												            int orderId = resultSet1.getInt("order_id");
+												            String restaurantName = resultSet1.getString("restaurant_name");
+												            String foodName = resultSet1.getString("food_name");
+												            String orderDate = resultSet1.getString("order_date");
+												            String address = resultSet1.getString("address");
+												            String status = resultSet1.getString("status");
+	
+												            System.out.printf("%-10d %-20s %-20s %-15s %-20s %-10s\n", 
+												                              orderId, restaurantName, foodName, orderDate, address, status);
+												        }
+												        if(hashItem) {
+												        	System.out.println("no previous order found");
+												        }
+													    } catch (SQLException e) {
+													        e.printStackTrace();
+													    }
+													
+													    System.out.println("----------------------------------------------------------------------------------");
+													    
+													int id=sc.nextInt();
+													sc.nextLine();
+												    try(ResultSet resultSet2 = userOrderController.getOrderById(new Object[] {id})) {
+												        if (resultSet2.next()) {
+												            int menuId = resultSet2.getInt("menu_id");
+												            int quantity = resultSet2.getInt("quantity");
+
+												            boolean response=cartController.addItemInCart(new Object[]{user.getUserId(), menuId, quantity});
+												            
+												            System.out.println(response?"Successfully added in cart":"failed in adding to cart");
+												        }
+												    } catch (SQLException e) {
+												        e.printStackTrace();
+												    }
+												}
+												default ->{
+													flag2=false;
+												}
+											}
+										}
+									}
 									default->{
 										flag1=false;
 									}
+									
 								}
+							
 							}
 						}
 					

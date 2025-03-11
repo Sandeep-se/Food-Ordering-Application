@@ -2,22 +2,22 @@ package com.project.controller;
 
 import java.sql.ResultSet;
 
-import com.project.service.RestaurantOrderService;
+import com.project.repository.RestaurantOrderRepository;
 
 public class RestaurantOrderController {
-	private RestaurantOrderService restaurantOrderService;
+	private RestaurantOrderRepository restaurantOrderRepository;
 	
-	public RestaurantOrderController(RestaurantOrderService restaurantOrderService) {
-		this.restaurantOrderService=restaurantOrderService;
+	public RestaurantOrderController(RestaurantOrderRepository restaurantOrderRepository) {
+		this.restaurantOrderRepository=restaurantOrderRepository;
 	}
 	
 	public ResultSet getRestaurantOrders(Object values[]) {
-		ResultSet resultSet=restaurantOrderService.getRestaurantOrders(values);
+		ResultSet resultSet=restaurantOrderRepository.getRestaurantOrders(values);
 		return resultSet;
 	}
 	
 	public boolean updateOrderStatus(Object values[]) {
-		boolean response=restaurantOrderService.updateOrderStatus(values);
+		boolean response=restaurantOrderRepository.updateOrderStatus(values);
 		return response;
 	}
 }

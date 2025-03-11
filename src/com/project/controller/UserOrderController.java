@@ -4,25 +4,26 @@ import java.sql.ResultSet;
 import java.util.List;
 
 import com.project.model.Cart;
+import com.project.repository.UserOrderRepository;
 import com.project.service.UserOrderService;
 
 public class UserOrderController {
-	private UserOrderService userOrderService;
+	private UserOrderRepository userOrderRepository;
 	
-	public UserOrderController(UserOrderService userOrderService) {
-		this.userOrderService=userOrderService;
+	public UserOrderController(UserOrderRepository userOrderRepository) {
+		this.userOrderRepository=userOrderRepository;
 	}
 	
 	public ResultSet getOrderHistory(Object values[]) {
-		return userOrderService.getOrderHistory(values);
+		return userOrderRepository.getOrderHistory(values);
 	}
 	
 	public boolean makeOrder(List<Cart> cartItems,Object values[]) {
-		return userOrderService.makeOrder(cartItems,values);
+		return userOrderRepository.makeOrder(cartItems,values);
 	}
 	
-	public boolean updateOrder(Object values[]) {
-		return userOrderService.updateOrder(values);
+	public ResultSet getOrderById(Object []values) {
+		return userOrderRepository.getOrderById(values);
 	}
 
 }

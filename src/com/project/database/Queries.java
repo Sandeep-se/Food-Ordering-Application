@@ -19,12 +19,27 @@ public enum Queries {
     		+ "JOIN food f ON m.food_id = f.food_id  \n"
     		+ "JOIN addresses a ON o.address_id = a.address_id \n"
     		+ "WHERE o.user_id = ?"),
-    UPDATE_ORDERS("UPDATE orders SET status = ? WHERE order_id = ?"),
+    
+    UPDATE_ORDERS("UPDATE orders o " +
+            "JOIN menu m ON o.menu_id = m.menu_id " +
+            "SET o.status = ? " +
+            "WHERE o.order_id = ? AND m.restaurant_id = ?"),
+    GET_ORDER_BY_ID("SELECT o.menu_id, o.quantity FROM orders o WHERE o.order_id = ?"),
+    
+    GET_RESTAURANT_ORDERS("SELECT o.order_id, u.name, u.phone_number, a.address, f.food_name, m.price, " +
+            "o.quantity, o.order_date, o.status " +
+            "FROM orders o " +
+            "JOIN menu m ON o.menu_id = m.menu_id " +
+            "JOIN restaurants r ON m.restaurant_id = r.restaurant_id " +
+            "JOIN food f ON m.food_id = f.food_id " +
+            "JOIN addresses a ON o.address_id = a.address_id " +
+            "JOIN users u ON o.user_id = u.user_id " +
+            "WHERE r.restaurant_id = ?"),
     //cart
     ADD_ITEM_IN_CART("INSERT INTO cart (user_id, menu_id, quantity) VALUES (?, ?, ?)"),
     REMOVE_ITEM_IN_CART("DELETE FROM cart WHERE user_id = ? AND menu_id = ?"),
     CLEAR_CART_ITEM("DELETE FROM cart WHERE user_id = ?"),
-    GET_CART_ITEMS("SELECT c.quantity, r.restaurant_name, r.restaurant_location, " +
+    GET_CART_ITEMS("SELECT c.user_id,m.menu_id,c.cart_id,c.quantity, r.restaurant_name, r.restaurant_location, " +
             "f.food_name, f.type, m.price " +
             "FROM cart c " +
             "JOIN menu m ON c.menu_id = m.menu_id " +
@@ -45,8 +60,7 @@ public enum Queries {
 		    	    "JOIN menu m ON r.restaurant_id = m.restaurant_id " +
 		    	    "JOIN food f ON m.food_id = f.food_id " +
 		    	    "WHERE r.restaurant_name LIKE ?"),
-	DELETE_RESTAURANT("DELETE FROM restaurants WHERE restaurant_id = ?"),
-	
+	DELETE_RESTAURANT("DELETE FROM restaurants WHERE restaurant_id = ?"),	
 	//menu
 	ADD_RESTAURANT_MENU("INSERT INTO menu(restaurant_id, food_id, price) VALUES (?, ?, ?)"),
 	GET_RESTAURANTS_MENU("SELECT m.menu_id,f.food_name, m.price \n"
@@ -55,6 +69,11 @@ public enum Queries {
 			+ "JOIN food f ON m.food_id = f.food_id\n"
 			+ "WHERE r.restaurant_id = ?"),
 	DELETE_RESTAURANT_MENU("DELETE FROM menu WHERE menu_id = ?"),
+//	SEARCH_MENU_BY_FOOD_NAME("SELECT r.restaurant_name, f.food_name, m.price " +
+//            "FROM menu m " +
+//            "JOIN restaurants r ON m.restaurant_id = r.restaurant_id " +
+//            "JOIN food f ON m.food_id = f.food_id " +
+//            "WHERE f.food_name LIKE ?"),
 	//food
 	CREATE_FOOD("INSERT INTO food(food_name, type) VALUES (?, ?)"),
 	DELETE_FOOD("DELETE FROM food WHERE food_id = ?"),
@@ -63,13 +82,22 @@ public enum Queries {
 //			+ "JOIN menu m ON r.restaurant_id = m.restaurant_id \n"
 //			+ "JOIN food f ON m.food_id = f.food_id \n"
 //			+ "WHERE f.food_name = ?");
-	SEARCH_BY_FOOD_NAME(
+	SEARCH_IN_MENU_BY_FOOD_NAME(
 		    "SELECT r.restaurant_id, r.restaurant_name, r.restaurant_location, f.food_name, m.price " +
 		    "FROM restaurants r " +
 		    "JOIN menu m ON r.restaurant_id = m.restaurant_id " +
 		    "JOIN food f ON m.food_id = f.food_id " +
 		    "WHERE f.food_name LIKE ?"
-		);
+		),
+	SEARCH_BY_FOOD_IN_MENU_RESTAURANT("SELECT r.restaurant_id, r.restaurant_name, r.restaurant_location, f.food_name, m.price " +
+	        "FROM restaurants r " +
+	        "JOIN menu m ON r.restaurant_id = m.restaurant_id " +
+	        "JOIN food f ON m.food_id = f.food_id " +
+	        "WHERE f.food_name LIKE ? AND r.restaurant_id = ?"),
+	UPDATE_MENU_PRICE("UPDATE menu SET price = ? WHERE menu_id = ? AND restaurant_id = ?"),
+	GET_ALL_FOOD_ITEMS("SELECT food_id, food_name FROM food");
+
+	
 	private final String query;
 	Queries(String query){
 		this.query=query;

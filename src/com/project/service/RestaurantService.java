@@ -38,4 +38,9 @@ public class RestaurantService {
 		return resultSet;
 		
 	}
+
+	public ResultSet login(Object[] values) {
+		ResultSet resultSet=databaseOperation.executeQuery(Queries.RESTAURANT_LOGIN.getQuery(), values);
+		return resultSet;
+	}
 }

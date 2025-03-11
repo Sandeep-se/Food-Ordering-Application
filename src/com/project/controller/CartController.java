@@ -3,38 +3,39 @@ package com.project.controller;
 import java.sql.ResultSet;
 
 import com.project.database.Queries;
+import com.project.repository.CartRepository;
 import com.project.service.CartService;
 
 public class CartController {
-	private CartService cartService;
+	private CartRepository cartRepository;
 	
-	public CartController(CartService cartService) {
-		this.cartService=cartService;
+	public CartController(CartRepository cartRepository) {
+		this.cartRepository=cartRepository;
 	}
 	
 	public boolean addItemInCart(Object values[]) {
-		return cartService.addItemInCart(values);
+		return cartRepository.addItemInCart(values);
 	} 
 	
 	public boolean removeItemInCart(Object values[]) {
-		return cartService.removeItemInCart(values);
+		return cartRepository.removeItemInCart(values);
 	}
 	
 	public ResultSet getItemInCart(Object values[]) {
-		return cartService.getItemInCart(values);
+		return cartRepository.getItemInCart(values);
 	}
 	
 	public boolean clearCart(Object values[]) {
-		return cartService.clearCart(values);
+		return cartRepository.clearCart(values);
 	}
 	
 	public boolean increaseQuantity(Object[] values) {
-		boolean response=cartService.increaseQuantity(values);
+		boolean response=cartRepository.increaseQuantity(values);
 		return response;
 	}
 	
 	public boolean decreaseQuantity(Object values[]) {
-		boolean response=cartService.decreaseQuantity(values);
+		boolean response=cartRepository.decreaseQuantity(values);
 		return response;
 	}
 }

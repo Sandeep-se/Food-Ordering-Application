@@ -2,37 +2,41 @@ package com.project.controller;
 
 import java.sql.ResultSet;
 
-import com.project.service.MenuService;
+import com.project.repository.MenuRepository;
 
 public class MenuController {
-	private MenuService menuService;
+	private MenuRepository menuRepository;
 	
-	public MenuController(MenuService menuService) {
-		this.menuService=menuService;
+	public MenuController(MenuRepository menuRepository) {
+		this.menuRepository=menuRepository;
 	}
 	
 	public boolean createMenu(Object values[]) {
-		return  menuService.createMenu(values);
+		return  menuRepository.createMenu(values);
 	}
 	
 	public boolean updateMenu(Object values[]) {
-		return menuService.updateMenu(values);
+		return menuRepository.updateMenu(values);
 	}
 	
 	public boolean deleteMenu(Object values[]) {
-		return menuService.deleteMenu(values);
+		return menuRepository.deleteMenu(values);
 	}
 	
 	public ResultSet getRestaurantMenu(Object values[]) {
-		return menuService.getRestaurantMenu(values);
+		return menuRepository.getRestaurantMenu(values);
 	}
 	
-	public ResultSet getMenu(Object values[]) {
-		return menuService.getMenu(values);
+//	public ResultSet getMenu(Object values[]) {
+//		return menuRepository.getMenu(values);
+//	}
+	
+	public ResultSet searchFoodInMenu(Object []values) {
+		return menuRepository.searchFoodInMenu(values);
 	}
 	
-	public ResultSet searcFoodInMenu(Object []values) {
-		return menuService.searcFoodInMenu(values);
+	public ResultSet searchFoodInMenuRestaurant(Object[] values) {
+		return menuRepository.searchFoodInMenuRestaurant( values);
 	}
 	
 	

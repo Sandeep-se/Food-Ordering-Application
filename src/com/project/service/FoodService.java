@@ -3,6 +3,7 @@ package com.project.service;
 import java.sql.ResultSet;
 
 import com.project.database.DatabaseOperation;
+import com.project.database.Queries;
 
 public class FoodService {
 	private DatabaseOperation databaseOperation;
@@ -26,7 +27,7 @@ public class FoodService {
 	}
 
 	public ResultSet getAllFoodItem() {
-		ResultSet resultSet=databaseOperation.executeQuery(null, null);
+		ResultSet resultSet=databaseOperation.executeQuery(Queries.GET_ALL_FOOD_ITEMS.getQuery(),new Object[] {});
 		return resultSet;
 	}
 
