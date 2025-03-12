@@ -1,40 +1,83 @@
 package com.project.service;
 
 
+import com.project.Validation;
 import com.project.database.DatabaseOperation;
 import com.project.database.Queries;
+import com.project.repository.DatabaseRepository;
 import com.project.repository.UserRepository;
 import com.project.repository.UserValidationRepository;
 
 public class UserService implements UserRepository{
-	private final DatabaseOperation databaseOperation;
+	private final DatabaseRepository databaseOperation;
 	private final UserValidationRepository userValidationRepository;
 
 	
-    public UserService(DatabaseOperation databaseOperation,UserValidationRepository userValidationRepository) {
+    public UserService(DatabaseRepository databaseOperation,UserValidationRepository userValidationRepository) {
         this.databaseOperation = databaseOperation;
         this.userValidationRepository = userValidationRepository;
     }
     @Override
-    public boolean register(Object values[]) {
-    	String email = (String) values[2];
-    	String phone = (String) values[3];
+    public String register(Object values[]) {
+    	String name=(String) values[0];
+    	String email = (String) values[1];
+    	String password=(String) values[2];
+    	String phoneNumber = (String) values[3];
     	
-    	if (userValidationRepository.checkUserEmailExists(new Object[]{email})) {
-            System.out.println("Email already exists!");
-            return false;
+    	if (name.isEmpty() || email.isEmpty() || password.isEmpty() || phoneNumber.isEmpty()) {
+//	        System.out.println("All fields are required!");
+	        return "All fields are required!";
+	        
+	    }
+    	if (!Validation.isValidEmail(email)) {
+//            System.out.println("Invalid Email Format!");
+            return "Invalid Email Format!";
         }
-    	if (userValidationRepository.checkUserPhoneNumberExists(new Object[]{phone})) {
-            System.out.println("Phone number already exists!");
-            return false;
+        if (!Validation.isValidPhoneNumber(phoneNumber)) {
+//            System.out.println("Invalid Phone Number Format!");
+            return "Invalid Phone Number Format!";
+        }
+        
+    	if (userValidationRepository.checkEmailExists(new Object[]{email})) {
+//            System.out.println("Email already exists!");
+            return "Email already exists!.try different Email";
+        }
+    	if (userValidationRepository.checkPhoneNumberExists(new Object[]{phoneNumber})) {
+//            System.out.println("Phone number already exists!");
+            return "Phone number already exists!.try different phone number";
         }
     	boolean response=databaseOperation.executeUpdate(Queries.USER_REGISTER.getQuery(),values);
-        return response;
+    	if(response) {
+    		return "register success";
+    	}
+    	else {
+    		return "database connection error";
+    	}
     }
     @Override
-    public boolean updateUser(Object values[]) {
+    public String updateUser(Object values[]) {
+    	
+    	String name = (String) values[0];
+        String email = (String) values[1];
+        String phoneNumber = (String) values[2];
+        Integer userId = (Integer) values[3];
+        
+        if (userId == null || userId <= 0) {
+            return "Invalid User ID!";
+        }
+        if (!Validation.isValidEmail(email)) {
+            return "Invalid Email Format!";
+        }
+        
+        if (!Validation.isValidPhoneNumber(phoneNumber)) {
+            return "Invalid Phone Number Format!";
+        }
+        
+        if (userValidationRepository.checkEmailExists(new Object[]{email})) {
+          return "Email already exists!.try different Email";
+      }
     	boolean response=databaseOperation.executeUpdate(Queries.UPDATE_USER.getQuery(), values);
-    	return response;
+    	return response? "sussessfully updated":"updation failed";
     }
 	
 }

@@ -10,7 +10,7 @@ public class AddressController {
 		this.addressRepository=addressRepository;
 	}
 	
-	public boolean addAddress(Object values[]) {
+	public String addAddress(Object values[]) {
 	     return addressRepository.addAddress(values);
 	}
 	public ResultSet getUserAddressesByUserId(Object values[]) {

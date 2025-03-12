@@ -14,7 +14,12 @@ public class Restaurant {
         this.email = email;
         this.password = password;
     } 
-
+    
+    public Restaurant(int restaurantId, String restaurantName, String restaurantLocation) {
+    	this.restaurantId = restaurantId;
+        this.restaurantName = restaurantName;
+        this.restaurantLocation = restaurantLocation;
+    }
     public int getRestaurantId() { return restaurantId; }
     public void setRestaurantId(int restaurantId) { this.restaurantId = restaurantId; }
 

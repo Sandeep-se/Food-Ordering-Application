@@ -4,15 +4,24 @@ import java.sql.ResultSet;
 
 import com.project.database.DatabaseOperation;
 import com.project.database.Queries;
+import com.project.repository.DatabaseRepository;
+import com.project.repository.EmailValidationRepository;
+import com.project.repository.RestaurantRepository;
 
-public class RestaurantService {
-	private DatabaseOperation databaseOperation;
-	
-	public RestaurantService(DatabaseOperation databaseOperation) {
-		this.databaseOperation=databaseOperation;
-	}
+public class RestaurantService  implements RestaurantRepository{
+	private final DatabaseRepository databaseOperation;
+    private final EmailValidationRepository emailValidationRepository;
+
+    public RestaurantService(DatabaseRepository databaseOperation, EmailValidationRepository emailValidationRepository) {
+        this.databaseOperation = databaseOperation;
+        this.emailValidationRepository = emailValidationRepository;
+    }
 	
 	public boolean createRestaurant(Object values[]) {
+		if (emailValidationRepository.checkEmailExists(new Object[]{values[2]})) {
+	        System.out.println("Email already exists!");
+	        return false;
+	    }
 		boolean response=databaseOperation.executeUpdate(Queries.RESTAURANT_REGITSER.getQuery(), values);
 		return response;
 	}
@@ -38,9 +47,9 @@ public class RestaurantService {
 		return resultSet;
 		
 	}
-
-	public ResultSet login(Object[] values) {
-		ResultSet resultSet=databaseOperation.executeQuery(Queries.RESTAURANT_LOGIN.getQuery(), values);
-		return resultSet;
-	}
 }
+
+//public ResultSet login(Object[] values) {
+//	ResultSet resultSet=databaseOperation.executeQuery(Queries.RESTAURANT_LOGIN.getQuery(), values);
+//	return resultSet;
+//}

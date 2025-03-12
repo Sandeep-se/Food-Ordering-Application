@@ -13,11 +13,11 @@ public class CartController {
 		this.cartRepository=cartRepository;
 	}
 	
-	public boolean addItemInCart(Object values[]) {
+	public String addItemInCart(Object values[]) {
 		return cartRepository.addItemInCart(values);
 	} 
 	
-	public boolean removeItemInCart(Object values[]) {
+	public String removeItemInCart(Object values[]) {
 		return cartRepository.removeItemInCart(values);
 	}
 	
@@ -25,17 +25,15 @@ public class CartController {
 		return cartRepository.getItemInCart(values);
 	}
 	
-	public boolean clearCart(Object values[]) {
+	public String clearCart(Object values[]) {
 		return cartRepository.clearCart(values);
 	}
 	
-	public boolean increaseQuantity(Object[] values) {
-		boolean response=cartRepository.increaseQuantity(values);
-		return response;
+	public String increaseQuantity(Object[] values) {
+		return cartRepository.increaseQuantity(values);
 	}
 	
-	public boolean decreaseQuantity(Object values[]) {
-		boolean response=cartRepository.decreaseQuantity(values);
-		return response;
+	public String decreaseQuantity(Object values[]) {
+		return cartRepository.decreaseQuantity(values);
 	}
 }

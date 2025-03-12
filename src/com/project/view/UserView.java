@@ -1,30 +1,18 @@
 package com.project.view;
 
 import java.sql.ResultSet;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
 import com.project.Utility;
-import com.project.controller.AddressController;
-import com.project.controller.AuthenticationController;
-import com.project.controller.CartController;
-import com.project.controller.MenuController;
-import com.project.controller.RestaurantController;
-import com.project.controller.UserController;
-import com.project.controller.UserOrderController;
-import com.project.database.DatabaseOperation;
-import com.project.model.User;
-import com.project.service.AddressService;
-import com.project.service.AuthenticationService;
-import com.project.service.CartService;
-import com.project.service.MenuService;
-import com.project.service.RestaurantService;
-import com.project.service.UserOrderService;
-import com.project.service.UserService;
-import com.project.model.Cart;
-import com.project.model.Restaurant;
+import com.project.repository.*;
+import com.project.controller.*;
+import com.project.model.*;
+import com.project.service.*;
+import com.project.database.*;
+
 
 public class UserView {
 	public void userView(Scanner sc){
@@ -32,28 +20,38 @@ public class UserView {
 		
 		boolean flag=true;
 		
-		DatabaseOperation databaseOperation=new DatabaseOperation();
+		DatabaseRepository databaseOperation=new DatabaseOperation();
+
+		UserValidationRepository userValidationService = new UserValidationService(databaseOperation);
 		
-		AuthenticationService authenticationService=new AuthenticationService(databaseOperation);
-		AuthenticationController authenticationController=new AuthenticationController(authenticationService);
-		
-		UserService userService=new UserService(databaseOperation);
+		UserRepository userService=new UserService(databaseOperation,userValidationService);
 		UserController userController=new UserController(userService);
 		
-		AddressService addressService=new AddressService(databaseOperation);
+		AuthenticationRepository userAuthenticationService=new UserAuthenticationService(databaseOperation);
+		UserAuthenticationController authenticationController=new UserAuthenticationController(userAuthenticationService);
+		
+		CartValidationRepository cartValidationService=new CartValidationService(databaseOperation);
+		
+		AddressRepository addressService=new AddressService(databaseOperation);
 		AddressController addressController=new AddressController(addressService);
 		
-		CartService cartService=new CartService(databaseOperation);
+		MenuValidationRepository menuValidationService = new MenuValidationService(databaseOperation);
+		
+		CartRepository cartService=new CartService(databaseOperation,cartValidationService,menuValidationService);
 		CartController cartController=new CartController(cartService);
 		
-		UserOrderService userOrderService=new UserOrderService(databaseOperation);
+		UserOrderRepository userOrderService=new UserOrderService(databaseOperation);
 		UserOrderController userOrderController=new UserOrderController(userOrderService);
 		
-		RestaurantService restaurantService=new RestaurantService(databaseOperation);
+		EmailValidationRepository emailValidationService=new EmailValidationService(databaseOperation);
+		RestaurantRepository restaurantService=new RestaurantService(databaseOperation,emailValidationService);
 		RestaurantController restaurantController=new RestaurantController(restaurantService);
 		
-		MenuService menuService=new MenuService(databaseOperation);
+		MenuRepository menuService=new MenuService(databaseOperation);
 		MenuController menuController=new MenuController(menuService);
+		
+		FavoriteRepository favoriteService=new FavoriteService(databaseOperation);
+		FavoriteController favoriteController=new FavoriteController(favoriteService);
 		
 		while(flag) {
 			
@@ -62,6 +60,7 @@ public class UserView {
 			System.out.println("0.Exit the page");
 			
 			int choose=sc.nextInt();
+			sc.nextLine();
 			
 			switch(choose) {
 				case 1->{
@@ -77,28 +76,23 @@ public class UserView {
 					    
 					    System.out.println("Enter your phone number: ");
 					    String phoneNumber = sc.nextLine();
+					    String response=userController.register(new Object[] {name,email,password,phoneNumber});
 					    
-					    if (name.isEmpty() || email.isEmpty() || password.isEmpty() || phoneNumber.isEmpty()) {
-					        System.out.println("All fields are required!");
-					        break;
-					    }
-					    
+					    System.out.println(response);
 				}
 				case 2->{
 					try {
 						System.out.println("Enetr the email: ");
 						String email=sc.next();
-						if(!email.contains("@gmail.com")){
-							System.out.println("Email should contain @gmail.com");
-							break;
-						}
 						
 						System.out.println("Enter password :");
 						String password=sc.next();
 						
 						Object values[]=new Object[] {email,password};
 						
-						ResultSet resultSet=authenticationService.login(values);
+						try(ResultSet resultSet=userAuthenticationService.login(values)){
+							
+						
 						
 						User user=null;
 						if (resultSet != null && resultSet.next()) {
@@ -117,25 +111,29 @@ public class UserView {
 								System.out.println("11 Home");
 								System.out.println("12 Cart");
 								System.out.println("13 Orders");
+								System.out.println("14.Favorite");
+								System.out.println("15.user profile");
+								System.out.println("0.exit");
 								
-								System.out.println("chooose the above option.enter the integer");
+								System.out.println("chooose the above option");
 								choose=sc.nextInt();
 								sc.nextLine();
+								
 								switch(choose) {
 									case 11 ->{
 										boolean flag2=true;
 										
 										while(flag2) {
-											System.out.println("111 List Restaurants along with Menu");
-											System.out.println("222 search By Restaurant");
-											System.out.println("333 search By food name");
-											System.out.println("444 add item in cart");
+											System.out.println("1 List Restaurants along with Menu");
+											System.out.println("2 search By Restaurant");
+											System.out.println("3 search By food name");
+											System.out.println("4 add item in cart");
 											
-											System.out.println("chooose the above option.enter the integer");
+											System.out.println("chooose the above option.");
 											choose=sc.nextInt();
 											sc.nextLine();
 											switch(choose) {
-												case 111->{
+												case 1->{
 													try(ResultSet resultSet1=restaurantController.getAllRestaurants()){
 													
 													
@@ -175,40 +173,45 @@ public class UserView {
 													    }
 													
 												}
-												case 222->{
+												case 2->{
 													try {
 													    System.out.println("Enter restaurant name (partial or full): ");
 													    String searchName = sc.nextLine();
-
+													    
 													    try (ResultSet resultSet1 = restaurantController.searchRestaurantByName(new Object[]{"%" + searchName + "%"}) ) {
 													        boolean found = false;
-
-													        while (resultSet1.next()) {
+													        List<Restaurant> restaurants=new ArrayList<>();
+															while(resultSet1!=null && resultSet1.next()) {
+																restaurants.add(new Restaurant(resultSet1.getInt("restaurant_id"),resultSet1.getString("restaurant_name"),resultSet1.getString("restaurant_location")));
+															}
+															
+													        for(Restaurant restaurant:restaurants) {
 													            found = true;
-													            int restaurantId = resultSet1.getInt("restaurant_id");
-													            String restaurantName = resultSet1.getString("restaurant_name");
-													            String location = resultSet1.getString("restaurant_location");
+													            int restaurantId =restaurant.getRestaurantId();
+													            String restaurantName = restaurant.getRestaurantName();
+													            String location = restaurant.getRestaurantLocation();
 
 													            System.out.println("\n===============================");
 													            System.out.println("Restaurant: " + restaurantName);
 													            System.out.println("Location: " + location);
 													            System.out.println("-------------------------------");
 
-													            boolean hasMenu = false;
 
-													            
-													            try (ResultSet menuResultSet = menuController.getRestaurantMenu(new Object[]{restaurantId})) {
-													                while (menuResultSet.next()) {
-													                    hasMenu = true;
-													                    String foodName = menuResultSet.getString("food_name");
-													                    double price = menuResultSet.getDouble("price");
-													                    System.out.printf("-> %s Price: ₹%.2f%n", foodName, price);
-													                }
-													            }
-
-													            if (!hasMenu) {
-													                System.out.println("No menu available for this restaurant.");
-													            }
+																try(ResultSet resultSet2=menuController.getRestaurantMenu(new Object[] {restaurant.getRestaurantId()})) {
+															        boolean hasMenu = false;
+															        while (resultSet2 != null && resultSet2.next()) {
+															            hasMenu = true;
+															            int menuId = resultSet2.getInt("menu_id");
+															            String foodName = resultSet2.getString("food_name");
+															            double price = resultSet2.getDouble("price");
+															            System.out.println("-> Food Name : " + foodName + " (Menu ID: " + menuId + ") price: ₹" + price);
+															        }
+															        if (!hasMenu) {
+															            System.out.println("  No menu available for this restaurant.");
+															        }
+															    } catch (SQLException e) {
+															        e.printStackTrace();
+															    }
 													        }
 
 													        if (!found) {
@@ -219,7 +222,7 @@ public class UserView {
 													    System.err.println("Database error: " + e.getMessage());
 													}
 											    }
-												case 333->{
+												case 3->{
 													try {
 												        System.out.println("Enter food name (partial or full): ");
 												        String searchFood = sc.nextLine();
@@ -253,17 +256,13 @@ public class UserView {
 													
 												}
 												
-												case 444->{
+												case 4->{
 													System.out.println("Enter Menu ID to add to cart:");
 												    int menuId = sc.nextInt();
 												    System.out.println("Enter Quantity:");
 												    int quantity = sc.nextInt();
-												    boolean added = cartController.addItemInCart(new Object[]{user.getUserId(), menuId, quantity});
-												    if (added) {
-												        System.out.println("Item added to cart successfully!");
-												    } else {
-												        System.out.println("Failed to add item to cart.");
-												    }
+												    String response = cartController.addItemInCart(new Object[]{user.getUserId(), menuId, quantity});
+												    System.out.println(response);
 												        
 												}
 												default->{
@@ -303,20 +302,13 @@ public class UserView {
 												            System.out.println(" No items in cart.");
 												            break;
 												        }
-												        int addressId=Utility.addressIdHelper(user.getUserId(), sc, addressService);
-//												        System.out.println(addressId);
+												        int addressId=Utility.addressIdHelper(user.getUserId(), sc, addressController);
 												        boolean response=false;
 												        
 												        response=userOrderController.makeOrder(cartItems,new Object[] {user.getUserId(),addressId});
 												        if(response) {
-												        	boolean response1=cartController.clearCart(new Object[] {user.getUserId()});
-												        	if(response1) {
-												        		System.out.println("cart clear succesfull");
-												        	}
-												        	else {
-												        		System.out.println("failed in cart clearing");
-												        		break;
-												        	}
+												        	String response1=cartController.clearCart(new Object[] {user.getUserId()});
+												        	System.out.println(response1);
 												        }
 												        if (response) {
 												            System.out.println("Order placed successfully!");
@@ -332,43 +324,28 @@ public class UserView {
 													
 													System.out.println("Enter Menu ID to remove from cart:");
 												    int menuId = sc.nextInt();
-												    boolean removed = cartController.removeItemInCart(new Object[]{user.getUserId(), menuId});
-												    if (removed) {
-												        System.out.println("Item removed from cart successfully!");
-												    } else {
-												        System.out.println("Failed to remove item from cart.");
-												    }
+												    String removed = cartController.removeItemInCart(new Object[]{user.getUserId(), menuId});
+												    System.out.println(removed);
 												}
 												case 3->{
 													//clear item in cart
-													boolean cleared = cartController.clearCart(new Object[]{user.getUserId()});
-												    if (cleared) {
-												        System.out.println("Cart cleared successfully!");
-												    } else {
-												        System.out.println("Failed to clear cart.");
-												    }
+													String cleared = cartController.clearCart(new Object[]{user.getUserId()});
+												    System.out.println(cleared);
 												}
 												case 4->{
 													//increment item in cart
 													System.out.println("Enter Menu ID to increment quantity:");
 												    int menuId = sc.nextInt();
-												    boolean increased = cartController.increaseQuantity(new Object[]{user.getUserId(), menuId});
-												    if (increased) {
-												        System.out.println("Item quantity increased successfully!");
-												    } else {
-												        System.out.println("Failed to increase item quantity.");
-												    }
+												    int quantity=1;
+												    String increased = cartController.increaseQuantity(new Object[]{quantity,user.getUserId(), menuId});
+												    System.out.println(increased);
 												}
 												case 5->{
 													//decrement item in cart
 													 System.out.println("Enter Menu ID to decrement quantity:");
 												    int menuId = sc.nextInt();
-												    boolean decreased = cartController.decreaseQuantity(new Object[]{user.getUserId(), menuId});
-												    if (decreased) {
-												        System.out.println("Item quantity decreased successfully!");
-												    } else {
-												        System.out.println("Failed to decrease item quantity.");
-												    }
+												    String decreased = cartController.decreaseQuantity(new Object[]{user.getUserId(), menuId});
+												    System.out.println(decreased);
 												}
 												case 6->{
 																										
@@ -497,9 +474,9 @@ public class UserView {
 												            int menuId = resultSet2.getInt("menu_id");
 												            int quantity = resultSet2.getInt("quantity");
 
-												            boolean response=cartController.addItemInCart(new Object[]{user.getUserId(), menuId, quantity});
+												            String response=cartController.addItemInCart(new Object[]{user.getUserId(), menuId, quantity});
 												            
-												            System.out.println(response?"Successfully added in cart":"failed in adding to cart");
+												            System.out.println(response);
 												        }
 												    } catch (SQLException e) {
 												        e.printStackTrace();
@@ -511,13 +488,22 @@ public class UserView {
 											}
 										}
 									}
+									case 14->{
+										FavoriteView.favoriteView(sc, favoriteController, user);
+									}
+									case 15->{
+										
+									}
 									default->{
 										flag1=false;
 									}
-									
+								}
 								}
 							
 							}
+						else {
+							System.out.println("invalid email id or password");
+						}
 						}
 					
 					}catch(SQLException e) {

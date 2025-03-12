@@ -9,5 +9,4 @@ public interface RestaurantRepository {
 	public ResultSet searchRestaurantByName(Object []values);
 	public boolean deleteRestaurantsById(Object values[]);
 	public ResultSet getRestaurantsMenu(Object[] values);
-	public ResultSet login(Object[] values);
 }

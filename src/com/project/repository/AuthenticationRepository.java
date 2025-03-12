@@ -2,7 +2,7 @@ package com.project.repository;
 
 import java.sql.ResultSet;
 
-public interface AutheticationRepository extends UserValidationRepository{
+public interface AuthenticationRepository{
 	public ResultSet login(Object[] values);
 	
 }

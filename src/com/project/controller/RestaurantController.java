@@ -29,9 +29,9 @@ public class RestaurantController {
 		return restaurantRepository.searchRestaurantByName(values);
 	}
 	
-	public ResultSet login(Object values[]) {
-		return restaurantRepository.login(values);
-	}
+//	public ResultSet login(Object values[]) {
+//		return restaurantRepository.login(values);
+//	}
 	public boolean deleteRestaurantsById(Object values[]) {
 		return restaurantRepository.deleteRestaurantsById(values);
 	}

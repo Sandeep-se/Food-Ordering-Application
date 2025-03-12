@@ -6,13 +6,14 @@ import java.util.List;
 import com.project.database.DatabaseOperation;
 import com.project.database.Queries;
 import com.project.model.Cart;
+import com.project.repository.DatabaseRepository;
 import com.project.repository.UserOrderRepository;
 
 public class UserOrderService implements UserOrderRepository {
 	
-	private DatabaseOperation databaseOperation;
+	private DatabaseRepository databaseOperation;
 	
-	public UserOrderService(DatabaseOperation databaseOperation) {
+	public UserOrderService(DatabaseRepository databaseOperation) {
 		this.databaseOperation=databaseOperation;
 	}
 	@Override

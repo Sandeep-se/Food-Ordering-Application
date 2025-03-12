@@ -4,12 +4,13 @@ import java.sql.ResultSet;
 
 import com.project.database.DatabaseOperation;
 import com.project.database.Queries;
+import com.project.repository.DatabaseRepository;
 import com.project.repository.MenuRepository;
 
 public class MenuService implements MenuRepository {
-	private DatabaseOperation databaseOperation;
+	private DatabaseRepository databaseOperation;
 	
-	public MenuService(DatabaseOperation databaseOperation) {
+	public MenuService(DatabaseRepository databaseOperation) {
 		this.databaseOperation=databaseOperation;
 	}
 	@Override

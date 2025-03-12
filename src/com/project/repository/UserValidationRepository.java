@@ -1,6 +1,5 @@
 package com.project.repository;
 
-public interface UserValidationRepository {
-	public boolean checkUserEmailExists(Object values[]);
-	public boolean checkUserPhoneNumberExists(Object values[]) ;
+public interface UserValidationRepository extends EmailValidationRepository{
+	public boolean checkPhoneNumberExists(Object values[]) ;
 }
