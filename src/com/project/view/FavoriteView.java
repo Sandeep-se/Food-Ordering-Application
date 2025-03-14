@@ -28,18 +28,18 @@ public class FavoriteView {
 				case 1->{
 					System.out.print("Enter Menu ID to add to favorites: ");
                     int menuId = sc.nextInt();
-                    boolean response = favoriteController.addFavorite(new Object[]{user.getUserId(), menuId});
-                    System.out.println(response ? "Item added to favorites!" : "Failed to add item.");
+                    String response = favoriteController.addFavorite(new Object[]{user.getUserId(), menuId});
+                    System.out.println(response);
 				}
 				case 2->{
 					System.out.print("Enter Menu ID to remove from favorites: ");
                     int menuId = sc.nextInt();
-                    boolean response = favoriteController.deleteFavorite(new Object[]{user.getUserId(), menuId});
-                    System.out.println(response ? "Item removed from favorites!" : "Failed to remove item.");
+                    String response = favoriteController.deleteFavorite(new Object[]{user.getUserId(), menuId});
+                    System.out.println(response);
 				}
 				case 3->{
-					boolean response = favoriteController.deleteAllFavorite(new Object[]{user.getUserId()});
-                    System.out.println(response ? "All favorite items cleared!" : "Failed to clear favorites.");
+					String response = favoriteController.deleteAllFavorite(new Object[]{user.getUserId()});
+                    System.out.println(response);
 				}
 				case 4->{
 					try (ResultSet resultSet = favoriteController.listFavoriteItems(new Object[]{user.getUserId()})) {

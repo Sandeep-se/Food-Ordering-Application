@@ -4,11 +4,12 @@ import java.sql.ResultSet;
 
 import com.project.database.DatabaseOperation;
 import com.project.database.Queries;
+import com.project.repository.DatabaseRepository;
 
 public class FoodService {
-	private DatabaseOperation databaseOperation;
+	private DatabaseRepository databaseOperation;
 	
-	public FoodService(DatabaseOperation databaseOperation) {
+	public FoodService(DatabaseRepository databaseOperation) {
 		this.databaseOperation=databaseOperation;
 	}
 	public boolean createFood(Object[] values) {

@@ -11,15 +11,15 @@ public class FavoriteController {
 		this.favoriteRepositiory=favoriteRepositiory;
 	}
 	
-	public boolean addFavorite(Object values[]) {
+	public String addFavorite(Object values[]) {
 		return favoriteRepositiory.addFavorite(values);
 	}
 	
-	public boolean deleteFavorite(Object values[]) {
+	public String deleteFavorite(Object values[]) {
 		return favoriteRepositiory.deleteFavorite(values);
 	}
 	
-	public boolean deleteAllFavorite(Object values[]) {
+	public String deleteAllFavorite(Object values[]) {
 		return favoriteRepositiory.deleteAllFavorite(values);
 	}
 	

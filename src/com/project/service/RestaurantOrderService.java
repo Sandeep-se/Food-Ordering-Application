@@ -4,13 +4,14 @@ import java.sql.ResultSet;
 
 import com.project.database.DatabaseOperation;
 import com.project.database.Queries;
+import com.project.repository.DatabaseRepository;
 import com.project.repository.RestaurantOrderRepository;
 
 public class RestaurantOrderService implements RestaurantOrderRepository{
 
-	private DatabaseOperation databaseOperation;
+	private DatabaseRepository databaseOperation;
 	
-	public RestaurantOrderService(DatabaseOperation databaseOperation) {
+	public RestaurantOrderService(DatabaseRepository databaseOperation) {
 		this.databaseOperation=databaseOperation;
 	}
 	@Override

@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.project.database.DatabaseOperation;
+import com.project.database.Queries;
 import com.project.repository.DatabaseRepository;
 import com.project.repository.EmailValidationRepository;
 
@@ -15,7 +16,7 @@ public class EmailValidationService implements EmailValidationRepository{
     }
 	@Override
 	public boolean checkEmailExists(Object[] values) {
-        try (ResultSet resultSet = databaseOperation.executeQuery(null, values)) {
+        try (ResultSet resultSet = databaseOperation.executeQuery(Queries.CHECK_RESTAURANT_EMAIL_EXISTS.getQuery(), values)) {
             if (resultSet.next()) {
                 return resultSet.getInt(1) > 0;
             }

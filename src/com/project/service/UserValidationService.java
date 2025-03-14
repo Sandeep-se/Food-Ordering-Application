@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.project.database.DatabaseOperation;
+import com.project.database.Queries;
 import com.project.repository.DatabaseRepository;
 import com.project.repository.UserValidationRepository;
 
@@ -16,7 +17,7 @@ public class UserValidationService implements UserValidationRepository {
 	@Override
     public boolean checkEmailExists(Object values[]) {
 		
-		try (ResultSet resultset=databaseOperation.executeQuery(null, values)){
+		try (ResultSet resultset=databaseOperation.executeQuery(Queries.CHECK_USER_EMAIL_EXISTS.getQuery(), values)){
 			if (resultset.next()) {
 			    return resultset.getInt(1) > 0; 
 			}
@@ -28,7 +29,7 @@ public class UserValidationService implements UserValidationRepository {
 
 	@Override
     public boolean checkPhoneNumberExists(Object values[]) {
-		try (ResultSet resultset=databaseOperation.executeQuery(null, values)){
+		try (ResultSet resultset=databaseOperation.executeQuery(Queries.CHECK_PHONE_EXISTS.getQuery(), values)){
 			if (resultset.next()) {
 			    return resultset.getInt(1) > 0; 
 			}

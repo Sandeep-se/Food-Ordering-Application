@@ -5,17 +5,18 @@ import java.sql.ResultSet;
 import com.project.database.DatabaseOperation;
 import com.project.database.Queries;
 import com.project.repository.AuthenticationRepository;
+import com.project.repository.DatabaseRepository;
 
 public class RestaurantAuthenticationService implements AuthenticationRepository {
-	private DatabaseOperation databaseOperation;
+	private DatabaseRepository databaseOperation;
 
-	public RestaurantAuthenticationService(DatabaseOperation databaseOperation) {
+	public RestaurantAuthenticationService(DatabaseRepository databaseOperation) {
 		this.databaseOperation = databaseOperation;
 	}
 
 	@Override
 	public ResultSet login(Object[] values) {
-		ResultSet resultSet=databaseOperation.executeQuery(null, values);	
+		ResultSet resultSet=databaseOperation.executeQuery(Queries.RESTAURANT_LOGIN.getQuery(), values);	
 		return resultSet;
 	}
 }

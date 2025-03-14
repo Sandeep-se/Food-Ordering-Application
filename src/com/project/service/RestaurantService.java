@@ -2,7 +2,7 @@ package com.project.service;
 
 import java.sql.ResultSet;
 
-import com.project.database.DatabaseOperation;
+import com.project.Validation;
 import com.project.database.Queries;
 import com.project.repository.DatabaseRepository;
 import com.project.repository.EmailValidationRepository;
@@ -17,13 +17,22 @@ public class RestaurantService  implements RestaurantRepository{
         this.emailValidationRepository = emailValidationRepository;
     }
 	
-	public boolean createRestaurant(Object values[]) {
-		if (emailValidationRepository.checkEmailExists(new Object[]{values[2]})) {
-	        System.out.println("Email already exists!");
-	        return false;
+	public String createRestaurant(Object values[]) {
+		String name=(String) values[0];
+		String location=(String)values[1];
+		String email=(String)values[2];
+		String password=(String)values[3];
+		if(name.isEmpty() || email.isEmpty() || password.isEmpty() || location.isEmpty()) {
+			return "All the fields are required";
+		}
+		if(!Validation.isValidEmail(email)) {
+			return "Email should contain '@gmail.com'";
+		}
+		if (emailValidationRepository.checkEmailExists(new Object[]{email})) {
+	        return "Email already exists!.try different email";
 	    }
-		boolean response=databaseOperation.executeUpdate(Queries.RESTAURANT_REGITSER.getQuery(), values);
-		return response;
+		boolean response = databaseOperation.executeUpdate(Queries.RESTAURANT_REGITSER.getQuery(), values);
+		return response ? "Registration successful" : "Registration failed";
 	}
 	 
 	public ResultSet getAllRestaurants() {
@@ -38,15 +47,16 @@ public class RestaurantService  implements RestaurantRepository{
 		return databaseOperation.executeQuery(Queries.RESTAURANT_BY_NAME.getQuery(), values);
 	}
 	
-	public boolean deleteRestaurantsById(Object values[]) {
-		return databaseOperation.executeUpdate(Queries.DELETE_RESTAURANT.getQuery(), values);
+	public String deleteRestaurantsById(Object values[]) {
+		boolean response=databaseOperation.executeUpdate(Queries.DELETE_RESTAURANT.getQuery(), values);
+		return response?"deleted the item":"seletion fail";
 	}
 
-	public ResultSet getRestaurantsMenu(Object[] values) {
-		ResultSet resultSet=databaseOperation.executeQuery(Queries.GET_RESTAURANTS_MENU.getQuery(), values);
-		return resultSet;
-		
-	}
+//	public ResultSet getRestaurantsMenu(Object[] values) {
+//		ResultSet resultSet=databaseOperation.executeQuery(Queries.GET_RESTAURANTS_MENU.getQuery(), values);
+//		return resultSet;
+//		
+//	}
 }
 
 //public ResultSet login(Object[] values) {

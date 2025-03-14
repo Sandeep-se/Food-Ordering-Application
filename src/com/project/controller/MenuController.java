@@ -11,15 +11,15 @@ public class MenuController {
 		this.menuRepository=menuRepository;
 	}
 	
-	public boolean createMenu(Object values[]) {
+	public String createMenu(Object values[]) {
 		return  menuRepository.createMenu(values);
 	}
 	
-	public boolean updateMenu(Object values[]) {
+	public String updateMenu(Object values[]) {
 		return menuRepository.updateMenu(values);
 	}
 	
-	public boolean deleteMenu(Object values[]) {
+	public String deleteMenu(Object values[]) {
 		return menuRepository.deleteMenu(values);
 	}
 	

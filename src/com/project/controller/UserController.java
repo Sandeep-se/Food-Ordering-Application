@@ -2,6 +2,8 @@ package com.project.controller;
 
 
 
+import java.sql.ResultSet;
+
 import com.project.repository.UserRepository;
 
 public class UserController {
@@ -17,6 +19,10 @@ public class UserController {
     
     public String updateUser(Object values[]) {
     	return userRepository.updateUser(values);
+    }
+    
+    public ResultSet viewUserProfile(Object values[]) {
+    	return userRepository.viewUserProfile(values);
     }
 }
 

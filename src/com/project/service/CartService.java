@@ -23,7 +23,7 @@ public class CartService implements CartRepository{
 	public String addItemInCart(Object[] values) {
 		try {
 			
-			if(!menuValidationRepository.checkMenuItemExists(new Object[]{values[1]})) {
+			if(!menuValidationRepository.checkMenuItemExistInMenu(new Object[]{values[1]})) {
                 return "Menu item does not exist.";
             }
 			

@@ -11,9 +11,8 @@ public class RestaurantController {
 		this.restaurantRepository= restaurantRepository;
 	}
 	
-	public boolean createRestaurant(Object values[]) {
-		boolean response=restaurantRepository.createRestaurant(values);
-		return response;
+	public String createRestaurant(Object values[]) {
+		return restaurantRepository.createRestaurant(values);
 	}
 	
 	
@@ -29,14 +28,11 @@ public class RestaurantController {
 		return restaurantRepository.searchRestaurantByName(values);
 	}
 	
-//	public ResultSet login(Object values[]) {
-//		return restaurantRepository.login(values);
-//	}
-	public boolean deleteRestaurantsById(Object values[]) {
+	public String deleteRestaurantsById(Object values[]) {
 		return restaurantRepository.deleteRestaurantsById(values);
 	}
 	
-	public ResultSet getRestaurantsMenu(Object values[]) {
-		return restaurantRepository.getRestaurantsMenu(values);
-	}
+//	public ResultSet getRestaurantsMenu(Object values[]) {
+//		return restaurantRepository.getRestaurantsMenu(values);
+//	}
 }

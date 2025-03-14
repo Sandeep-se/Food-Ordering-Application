@@ -1,6 +1,8 @@
 package com.project.service;
 
 
+import java.sql.ResultSet;
+
 import com.project.Validation;
 import com.project.database.DatabaseOperation;
 import com.project.database.Queries;
@@ -25,25 +27,20 @@ public class UserService implements UserRepository{
     	String phoneNumber = (String) values[3];
     	
     	if (name.isEmpty() || email.isEmpty() || password.isEmpty() || phoneNumber.isEmpty()) {
-//	        System.out.println("All fields are required!");
 	        return "All fields are required!";
 	        
 	    }
     	if (!Validation.isValidEmail(email)) {
-//            System.out.println("Invalid Email Format!");
             return "Invalid Email Format!";
         }
         if (!Validation.isValidPhoneNumber(phoneNumber)) {
-//            System.out.println("Invalid Phone Number Format!");
             return "Invalid Phone Number Format!";
         }
         
     	if (userValidationRepository.checkEmailExists(new Object[]{email})) {
-//            System.out.println("Email already exists!");
             return "Email already exists!.try different Email";
         }
     	if (userValidationRepository.checkPhoneNumberExists(new Object[]{phoneNumber})) {
-//            System.out.println("Phone number already exists!");
             return "Phone number already exists!.try different phone number";
         }
     	boolean response=databaseOperation.executeUpdate(Queries.USER_REGISTER.getQuery(),values);
@@ -78,6 +75,10 @@ public class UserService implements UserRepository{
       }
     	boolean response=databaseOperation.executeUpdate(Queries.UPDATE_USER.getQuery(), values);
     	return response? "sussessfully updated":"updation failed";
+    }
+    
+    public ResultSet viewUserProfile(Object values[]) {
+        return databaseOperation.executeQuery(Queries.VIEW_USER_PROFILE.getQuery(), values);
     }
 	
 }

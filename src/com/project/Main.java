@@ -20,14 +20,13 @@ public class Main {
 	public static void main(String args[]) throws SQLException {
 
 		try {
-			UserView userView=new UserView();
-			userView.userView(new Scanner(System.in));
-//			RestaurantView view=new RestaurantView();
-//			view.restaurantView(new Scanner(System.in));
+//			UserView userView=new UserView();
+//			userView.userView(new Scanner(System.in));
+			RestaurantView view=new RestaurantView();
+			view.restaurantView(new Scanner(System.in));
 		} catch (Exception e) {  
 	        e.printStackTrace();  
 	    } finally {
-	        System.out.println("Closing database connection...");
 			Jdbc.closeConnection();
 	    }
 	}

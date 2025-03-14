@@ -15,7 +15,7 @@ public class MenuValidationService implements MenuValidationRepository {
     }
 
     @Override
-    public boolean checkMenuItemExists(Object[] values) {
+    public boolean checkMenuItemExistInMenu(Object[] values) {
         try (ResultSet resultSet = databaseOperation.executeQuery(Queries.CHECK_MENU_ITEM_EXISTS.getQuery(), values)) {
         	if (resultSet.next()) {
                 return resultSet.getInt(1) > 0;

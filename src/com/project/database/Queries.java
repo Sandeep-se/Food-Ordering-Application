@@ -5,7 +5,10 @@ public enum Queries {
     USER_REGISTER("INSERT INTO users (name, email, password, phone_number) VALUES (?, ?, ?, ?)"),
     USER_LOGIN("SELECT * FROM users WHERE email = ? AND password = ?"),
     UPDATE_USER("UPDATE users SET name = ?, email = ?, phone_number = ? WHERE user_id = ?"),
+    CHECK_USER_EMAIL_EXISTS("SELECT 1 FROM users WHERE email = ?"),
+    CHECK_PHONE_EXISTS("SELECT 1 FROM users WHERE phone_number = ?"),
     USERS("SELECT * FROM users"),
+    VIEW_USER_PROFILE("SELECT user_id, name, email, password, phone_number FROM users WHERE user_id = ?"),
     //address
 	ADD_ADDRESS("INSERT INTO addresses (user_id, address) VALUES (?, ?)"),
     GET_ADDRESS_BY_ADDRESS_ID("SELECT * FROM addresses WHERE address_id = ?"),
@@ -59,16 +62,15 @@ public enum Queries {
             "JOIN menu m ON f.menu_id = m.menu_id " +
             "JOIN food fd ON m.food_id = fd.food_id " +
             "WHERE f.user_id = ?"),
+    CHECK_MENU_EXISTS_IN_FAVORITES("SELECT 1 FROM favorites WHERE user_id = ? AND menu_id = ?"),
+
 	//restaurant
 	RESTAURANT_REGITSER("INSERT INTO restaurants(restaurant_name, restaurant_location, email, password) VALUES (?, ?, ?, ?)"),
 	RESTAURANT_LOGIN("SELECT * FROM restaurants WHERE email = ? AND password = ?"),
 	LIST_RESTAURANTS("SELECT * FROM restaurants"),
 	RESTAURANT_BY_ID("SELECT * FROM restaurants WHERE restaurant_id = ?"),
-//	RESTAURANT_BY_NAME("SELECT r.restaurant_id, r.restaurant_name, r.restaurant_location, f.food_name, m.price " +
-//		    	    "FROM restaurants r " +
-//		    	    "JOIN menu m ON r.restaurant_id = m.restaurant_id " +
-//		    	    "JOIN food f ON m.food_id = f.food_id " +
-//		    	    "WHERE r.restaurant_name LIKE ?"),
+
+	CHECK_RESTAURANT_EMAIL_EXISTS("SELECT 1 FROM restaurants WHERE email = ?"),
 	RESTAURANT_BY_NAME("SELECT restaurant_id,restaurant_name,restaurant_location FROM restaurants WHERE restaurant_name LIKE ?"),
 	DELETE_RESTAURANT("DELETE FROM restaurants WHERE restaurant_id = ?"),	
 	//menu
@@ -78,7 +80,7 @@ public enum Queries {
 			+ "JOIN restaurants r ON m.restaurant_id = r.restaurant_id\n"
 			+ "JOIN food f ON m.food_id = f.food_id\n"
 			+ "WHERE r.restaurant_id = ?"),
-	DELETE_RESTAURANT_MENU("DELETE FROM menu WHERE menu_id = ?"),
+	DELETE_RESTAURANT_MENU("DELETE FROM menu WHERE restaurant_id=? AND menu_id = ?"),
 	CHECK_MENU_ITEM_EXISTS("SELECT 1 FROM menu WHERE menu_id = ?"),
 
 	CREATE_FOOD("INSERT INTO food(food_name, type) VALUES (?, ?)"),
@@ -123,3 +125,9 @@ public enum Queries {
 //+ "JOIN menu m ON r.restaurant_id = m.restaurant_id \n"
 //+ "JOIN food f ON m.food_id = f.food_id \n"
 //+ "WHERE f.food_name = ?");
+
+//RESTAURANT_BY_NAME("SELECT r.restaurant_id, r.restaurant_name, r.restaurant_location, f.food_name, m.price " +
+//"FROM restaurants r " +
+//"JOIN menu m ON r.restaurant_id = m.restaurant_id " +
+//"JOIN food f ON m.food_id = f.food_id " +
+//"WHERE r.restaurant_name LIKE ?"),
